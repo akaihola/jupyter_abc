@@ -52,5 +52,10 @@ Start a new notebook in which you load and use the extension:
 
 .. image:: jupiter.png
 
+.. note:: Try out the above example interactively using the
+          `quickstart notebook`_ in the binder_ service.
+
 .. _ABC: http://abcnotation.com/
 .. _abcjs: https://abcjs.net/
+.. _`quickstart notebook`: https://mybinder.org/v2/gh/akaihola/jupyter_abc/binder?filepath=examples%2Fquickstart.ipynb
+.. _binder: https://mybinder.org/
