@@ -1,6 +1,5 @@
-import json
 from string import Template
-from typing import List, Dict, Any
+from typing import List, Dict
 
 from IPython import InteractiveShell
 from IPython.core.display import display, HTML
@@ -22,10 +21,11 @@ def find_abcjs() -> str:
     static_files = resource_listdir('jupyter_abc', 'static')
     abcjs_filename = next(name for name in static_files
                           if name.startswith('abcjs') and name.endswith('.js'))
-    return '/nbextensions/jupyter-abc/{}'.format(abcjs_filename[:-3])
+    return ('require.toUrl("nbextensions/jupyter-abc/{}")'
+            .format(abcjs_filename))
 
 
-def get_requirejs_configuration() -> Dict[str, Dict[str, Any]]:
+def get_requirejs_configuration() -> str:
     """Generate configuration to use for ``require.config()``
 
     This is required for loading the ``abcjs`` Javascript library. The library
@@ -34,12 +34,14 @@ def get_requirejs_configuration() -> Dict[str, Dict[str, Any]]:
     directly with ``requirejs`` without specifying the path and the name of the
     exported global object.
 
-    :return: The configuration object for ``require.config()``
+    :return: The configuration object for ``require.config()`` as JavaScript
+             code
 
     """
-    abcjs_url = find_abcjs()
-    return {'paths': {'abcjs': abcjs_url},
-            'shim': {'abcjs': {'exports': 'ABCJS'}}}
+    return Template("""
+        {paths: {abcjs: ${abcjs_url}},
+         shim: {abcjs: {exports: 'ABCJS'}}}
+    """).substitute(abcjs_url=find_abcjs())
 
 
 INIT_JAVASCRIPT_TEMPLATE = Template(
@@ -67,5 +69,5 @@ def load_ipython_extension(ipython: InteractiveShell) -> None:
     """
     ipython.register_magics(JupyterAbcMagics)
     init_script = INIT_JAVASCRIPT_TEMPLATE.substitute(
-        requirejs_config=json.dumps(get_requirejs_configuration()))
+        requirejs_config=get_requirejs_configuration())
     display(HTML(init_script))
