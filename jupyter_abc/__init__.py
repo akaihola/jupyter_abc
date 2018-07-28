@@ -47,7 +47,6 @@ def get_requirejs_configuration() -> str:
 INIT_JAVASCRIPT_TEMPLATE = Template(
     '<script type="text/javascript">'
     '    require.config(${requirejs_config});'
-    '    require(["abcjs"], function(abcjs) { window.ABCJS = abcjs; });'
     '</script>')
 
 
