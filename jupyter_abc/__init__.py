@@ -1,11 +1,7 @@
 from string import Template
 from typing import List, Dict
 
-from IPython import InteractiveShell
-from IPython.core.display import display, HTML
 from pkg_resources import resource_listdir
-
-from jupyter_abc.magics import JupyterAbcMagics
 
 
 def find_abcjs() -> str:
@@ -57,7 +53,7 @@ def _jupyter_nbextension_paths() -> List[Dict[str, str]]:
              'require': 'jupyter-abc/index'}]
 
 
-def load_ipython_extension(ipython: InteractiveShell) -> None:
+def load_ipython_extension(ipython: 'IPython.InteractiveShell') -> None:
     """Initialize magics commands and initialize the ``abcjs`` library
 
     ``abcjs`` is initialized by loading the Javascript library and assigning it
@@ -66,6 +62,8 @@ def load_ipython_extension(ipython: InteractiveShell) -> None:
     :param ipython: The active IPython instance
 
     """
+    from IPython.core.display import display, HTML
+    from jupyter_abc.magics import JupyterAbcMagics
     ipython.register_magics(JupyterAbcMagics)
     init_script = INIT_JAVASCRIPT_TEMPLATE.substitute(
         requirejs_config=get_requirejs_configuration())
